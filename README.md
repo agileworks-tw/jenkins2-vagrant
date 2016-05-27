@@ -1,6 +1,10 @@
 # jenkins2-vagrant
 Vagrant-box for testing Jenkins 2.0
 
+Install
+
+    brew cask install vagrant
+
 Startup with
 
     vagrant up
