@@ -19,9 +19,11 @@ Vagrant.configure(2) do |config|
     sudo apt-add-repository ppa:andrei-pozolotin/maven3
     sudo apt-get -y update
     sudo apt-get -y install maven3 daemon unzip
+  SHELL
+  
+  config.vm.provision "shell", inline: <<-SHELL
     wget http://pkg.jenkins-ci.org/debian/binary/jenkins_2.6_all.deb
     sudo dpkg -i jenkins_2.6_all.deb
-
     sudo su jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/cobertura.hpi -o /var/lib/jenkins/plugins/cobertura.hpi'
     sudo su jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/ace-editor.hpi -o /var/lib/jenkins/plugins/ace-editor.hpi'
     sudo su jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/antisamy-markup-formatter.hpi -o /var/lib/jenkins/plugins/antisamy-markup-formatter.hpi'
@@ -97,6 +99,10 @@ Vagrant.configure(2) do |config|
     sudo usermod -a -G docker jenkins
     sudo su -c 'curl -L https://github.com/docker/compose/releases/download/1.7.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose'
     sudo chmod +x /usr/local/bin/docker-compose
+  SHELL
+
+  config.vm.provision "shell", inline: <<-SHELL
+
   SHELL
 
 
