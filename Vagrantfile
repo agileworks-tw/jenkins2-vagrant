@@ -20,7 +20,7 @@ Vagrant.configure(2) do |config|
     sudo apt-get -y update
     sudo apt-get -y install maven3 daemon unzip
   SHELL
-  
+
   config.vm.provision "shell", inline: <<-SHELL
     wget http://pkg.jenkins-ci.org/debian/binary/jenkins_2.6_all.deb
     sudo dpkg -i jenkins_2.6_all.deb
@@ -102,7 +102,20 @@ Vagrant.configure(2) do |config|
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-
+    sudo su vagrant -c 'sudo apt-get install git -y'
+    sudo su vagrant -c 'wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash'
+    sudo su vagrant -c 'source ~/.nvm/nvm.sh'
+    sudo su vagrant -c 'echo "export NVM_DIR="$HOME/.nvm"" >> ~/.bashrc'
+    sudo su vagrant -c 'echo "[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"" >> ~/.bashrc'
+    sudo su vagrant -c 'sudo apt-get install default-jre -y'
+    sudo so vagrant -c 'sudo apt-get install default-jdk -y'
+    sudo su vagrant -c 'git clone https://github.com/agileworks-tw/spring-boot-sample.git'
+    sudo su vagrant -c 'mkdir workspace'
+    sudo su vagrant -c 'mv spring-boot-sample/ workspace/'
+    # 下面是執行失敗的語法
+    sudo su vagrant -c 'nvm install v4.4.5'
+    sudo su vagrant -c 'nvm alias default v4.4.5'
+    sudo su vagrant -c 'npm install pm2 -g'
   SHELL
 
 
