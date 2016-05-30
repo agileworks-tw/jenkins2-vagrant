@@ -104,11 +104,11 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: <<-SHELL
     sudo su vagrant -l -c 'wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash'
     sudo su vagrant -l -c '. ~/.nvm/nvm.sh && nvm install v4.4.5 && nvm alias default v4.4.5 && npm install pm2 -g'
-
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
     sudo su vagrant -c 'mkdir workspace && cd workspace && git clone https://github.com/agileworks-tw/spring-boot-sample.git'
+    sudo su vagrant -c 'cd workspace/spring-boot-sample && mvn package'
   SHELL
 
 
