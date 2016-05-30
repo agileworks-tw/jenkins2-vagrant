@@ -91,6 +91,7 @@ Vagrant.configure(2) do |config|
 
     # replace first true for <useSecurity>true</useSecurity> to <useSecurity>false</useSecurity>
     sudo su - jenkins -c 'sed -i "0,/true/s,true,false," config.xml'
+    sudo usermod -aG sudo jenkins
     sudo service jenkins restart
 
   SHELL
