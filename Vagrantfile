@@ -111,6 +111,18 @@ Vagrant.configure(2) do |config|
     sudo su vagrant -c 'cd workspace/spring-boot-sample && mvn package'
   SHELL
 
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo su vagrant -c 'java -version'
+    sudo su vagrant -c 'mvn -version'
+    sudo su vagrant -c 'docker -v'
+    sudo su vagrant -c 'docker-compose -v'
+
+    sudo su vagrant -c 'cd workspace && git clone https://github.com/agileworks-tw/java-hello-world.git'
+    sudo su vagrant -c 'cd workspace/java-hello-world && javac HelloWorld.java && java HelloWorld'
+    sudo su vagrant -c 'cd workspace/java-hello-world && docker run --rm -v `pwd`:/app -w /app anapsix/alpine-java:jdk8 javac HelloWorld.java'
+    sudo su vagrant -c 'cd workspace/java-hello-world && docker run --rm -v `pwd`:/app -w /app anapsix/alpine-java:jdk8 java HelloWorld'
+
+  SHELL
 
 
 end
