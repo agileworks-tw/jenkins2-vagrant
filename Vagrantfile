@@ -18,7 +18,7 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: <<-SHELL
     sudo apt-add-repository ppa:andrei-pozolotin/maven3
     sudo apt-get -y update
-    sudo apt-get -y install default-jre default-jdk maven3 daemon unzip git
+    sudo apt-get -y install phantomjs gradle default-jre default-jdk maven3 daemon unzip git
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
@@ -99,6 +99,11 @@ Vagrant.configure(2) do |config|
     sudo usermod -a -G docker jenkins
     sudo su -c 'curl -L https://github.com/docker/compose/releases/download/1.7.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose'
     sudo chmod +x /usr/local/bin/docker-compose
+    sudo su vagrant -l -c 'docker pull ubuntu:16.04'
+    sudo su vagrant -l -c 'docker pull andreptb/maven:3.3.9-jdk8'
+    sudo su vagrant -l -c 'docker pull anapsix/alpine-java:jdk8'
+    sudo su vagrant -l -c 'docker pull mhart/alpine-node-auto:4'
+    sudo su vagrant -l -c 'docker pull alpine:latest'
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
@@ -109,6 +114,12 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "shell", inline: <<-SHELL
     sudo su vagrant -c 'mkdir workspace && cd workspace && git clone https://github.com/agileworks-tw/spring-boot-sample.git'
+  SHELL
+
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo su vagrant -l -c 'git clone git://github.com/c9/core.git c9sdk && cd c9sdk'
+    sudo su vagrant -l -c '# scripts/install-sdk.sh && npm i'
+    sudo su vagrant -l -c 'pm2 start server.js --name "cloud9" -- --debug -l 0.0.0.0 -p 9083 -w /home/user/workspace -a :'
   SHELL
 
 
