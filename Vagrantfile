@@ -117,7 +117,8 @@ Vagrant.configure(2) do |config|
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-    sudo su vagrant -l -c 'git clone git://github.com/c9/core.git c9sdk && cd c9sdk && npm i'
+    sudo su vagrant -l -c 'git clone git://github.com/c9/core.git c9sdk && cd c9sdk'
+    sudo su vagrant -l -c '. ~/.nvm/nvm.sh && nvm install v4.4.5 && nvm alias default v4.4.5 && npm install pm2 -g && npm i'
     sudo su vagrant -l -c 'pm2 start server.js --name "cloud9" -- --debug -l 0.0.0.0 -p 9083 -w /home/user/workspace -a :'
   SHELL
 
