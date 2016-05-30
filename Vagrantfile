@@ -18,7 +18,7 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: <<-SHELL
     sudo apt-add-repository ppa:andrei-pozolotin/maven3
     sudo apt-get -y update
-    sudo apt-get -y install maven3 daemon unzip git
+    sudo apt-get -y install default-jre default-jdk maven3 daemon unzip git
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
@@ -108,11 +108,7 @@ Vagrant.configure(2) do |config|
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-    sudo su vagrant -c 'sudo apt-get install default-jre -y'
-    sudo so vagrant -c 'sudo apt-get install default-jdk -y'
-    sudo su vagrant -c 'git clone https://github.com/agileworks-tw/spring-boot-sample.git'
-    sudo su vagrant -c 'mkdir workspace'
-    sudo su vagrant -c 'mv spring-boot-sample/ workspace/'
+    sudo su vagrant -c 'mkdir workspace && cd workspace && git clone https://github.com/agileworks-tw/spring-boot-sample.git'
   SHELL
 
 
