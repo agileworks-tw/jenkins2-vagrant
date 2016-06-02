@@ -8,13 +8,15 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 8000, host: 8000
   config.vm.network "forwarded_port", guest: 8800, host: 8800
 
+  config.vm.provider "virtualbox" do |vb|
+      vb.memory = "1536"
+      # vb.cpus = 2
+  end
+
   # config.vm.synced_folder "ansible", "/tmp/ansible/"
 
   # config.vm.network "private_network", ip: "192.168.33.10"
 
-  # Enable provisioning with a shell script. Additional provisioners such as
-  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
-  # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
     sudo useradd -m user
     sudo usermod -aG sudo user
@@ -129,6 +131,11 @@ Vagrant.configure(2) do |config|
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && cd workspace && git clone https://github.com/TrunkWorkshop/sailsSample.git && cd sailsSample && npm i'
+  SHELL
+
+
+  config.vm.provision "shell", inline: <<-SHELL
     sudo su - user -c 'java -version'
     sudo su - user -c 'mvn -version'
     sudo su - user -c 'docker -v'
@@ -140,5 +147,14 @@ Vagrant.configure(2) do |config|
     sudo su - user -c 'cd workspace/java-hello-world && docker run --rm -v `pwd`:/app -w /app anapsix/alpine-java:jdk8 java HelloWorld'
   SHELL
 
+  # config.vm.provision "shell", inline: <<-SHELL
+  #
+  #   sudo su -c 'echo "deb http://download.virtualbox.org/virtualbox/debian $(lsb_release -s -c) contrib" >> /etc/apt/sources.list'
+  #   sudo wget -q http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | sudo apt-key add -
+  #   sudo apt-get update
+  #   sudo apt-get install virtualbox-5.0
+  #   sudo su -c 'curl -L https://github.com/docker/machine/releases/download/v0.7.0/docker-machine-`uname -s`-`uname -m` >/usr/local/bin/docker-machine && chmod +x /usr/local/bin/docker-machine'
+  #
+  # SHELL
 
 end
