@@ -25,7 +25,7 @@ Vagrant.configure(2) do |config|
 
     sudo apt-add-repository ppa:andrei-pozolotin/maven3
     sudo apt-get -y update
-    sudo apt-get -y install phantomjs gradle default-jre default-jdk maven3 daemon unzip git
+    sudo apt-get -y install phantomjs gradle default-jre default-jdk maven3 daemon unzip git build-essential
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
@@ -118,6 +118,13 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: <<-SHELL
     sudo su - user -l -c 'wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash'
     sudo su - user -l -c '. ~/.nvm/nvm.sh && nvm install v4.4.5 && nvm alias default v4.4.5 && npm install pm2 -g'
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && pm2 set pm2-webshell:port 9082 && pm2 install pm2-webshell'
+
+    sudo su - user -l -c 'git clone https://github.com/agileworks-tw/pm2-webshell.git'
+    sudo su - user -l -c 'cp -r pm2-webshell/node_modules/tty.js/static/ .pm2/node_modules/pm2-webshell/node_modules/tty.js/'
+    sudo su - user -l -c 'cp -r pm2-webshell/app.js .pm2/node_modules/pm2-webshell/app.js && rm -rf pm2-webshell'
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && pm2 restart pm2-webshell'
+
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
@@ -126,7 +133,7 @@ Vagrant.configure(2) do |config|
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-    sudo su - user -l -c '. ~/.nvm/nvm.sh && cd workspace && git clone git://github.com/c9/core.git c9sdk && cd c9sdk && npm i'
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && cd workspace && git clone git://github.com/c9/core.git c9sdk && cd c9sdk && scripts/install-sdk.sh'
     sudo su - user -l -c '. ~/.nvm/nvm.sh && cd workspace/c9sdk && pm2 start server.js --name "cloud9" -- --debug -l 0.0.0.0 -p 9083 -w /home/user/workspace -a :'
   SHELL
 
