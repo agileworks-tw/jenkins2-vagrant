@@ -135,6 +135,7 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: <<-SHELL
     sudo su - user -l -c '. ~/.nvm/nvm.sh && cd workspace && git clone git://github.com/c9/core.git c9sdk && cd c9sdk && scripts/install-sdk.sh'
     sudo su - user -l -c '. ~/.nvm/nvm.sh && cd workspace/c9sdk && pm2 start server.js --name "cloud9" -- --debug -l 0.0.0.0 -p 9083 -w /home/user/workspace -a :'
+    sudo su -c "env PATH=$PATH:/home/user/.nvm/versions/node/v4.4.5/bin pm2 startup ubuntu -u user --hp /home/user"
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
