@@ -13,7 +13,7 @@ Vagrant.configure(2) do |config|
       # vb.cpus = 2
   end
 
-  # config.vm.synced_folder "ansible", "/tmp/ansible/"
+  config.vm.synced_folder "files", "/tmp/files/"
 
   # config.vm.network "private_network", ip: "192.168.33.10"
 
@@ -90,6 +90,13 @@ Vagrant.configure(2) do |config|
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/workflow-step-api.hpi -o plugins/workflow-step-api.hpi'
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/workflow-support.hpi -o plugins/workflow-support.hpi'
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/ws-cleanup.hpi -o plugins/ws-cleanup.hpi'
+    sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/xframe-filter-plugin.hpi -o plugins/xframe-filter-plugin.hpi'
+
+    sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/xframe-filter-plugin.hpi -o plugins/xframe-filter-plugin.hpi'
+
+    sudo su - jenkins -c 'cp -r /tmp/files/org.jenkins.ci.plugins.xframe_filter.XFrameFilterPageDecorator.xml ~/'
+
+
 
     # replace first true for <useSecurity>true</useSecurity> to <useSecurity>false</useSecurity>
     sudo su - jenkins -c 'sed -i "0,/true/s,true,false," config.xml'
