@@ -8,13 +8,15 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 8000, host: 8000
   config.vm.network "forwarded_port", guest: 8800, host: 8800
 
-  # config.vm.synced_folder "ansible", "/tmp/ansible/"
+  config.vm.provider "virtualbox" do |vb|
+      vb.memory = "1536"
+      # vb.cpus = 2
+  end
+
+  config.vm.synced_folder "files", "/tmp/files/"
 
   # config.vm.network "private_network", ip: "192.168.33.10"
 
-  # Enable provisioning with a shell script. Additional provisioners such as
-  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
-  # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
     sudo useradd -m user
     sudo usermod -aG sudo user
@@ -23,11 +25,11 @@ Vagrant.configure(2) do |config|
 
     sudo apt-add-repository ppa:andrei-pozolotin/maven3
     sudo apt-get -y update
-    sudo apt-get -y install phantomjs gradle default-jre default-jdk maven3 daemon unzip git
+    sudo apt-get -y install phantomjs gradle default-jre default-jdk maven3 daemon unzip git build-essential
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-    wget http://pkg.jenkins-ci.org/debian/binary/jenkins_2.6_all.deb
+    wget http://pkg.jenkins-ci.org/debian/binary/jenkins_2.8_all.deb
     sudo dpkg -i jenkins_2.6_all.deb
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/cobertura.hpi -o plugins/cobertura.hpi'
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/ace-editor.hpi -o plugins/ace-editor.hpi'
@@ -88,9 +90,17 @@ Vagrant.configure(2) do |config|
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/workflow-step-api.hpi -o plugins/workflow-step-api.hpi'
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/workflow-support.hpi -o plugins/workflow-support.hpi'
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/ws-cleanup.hpi -o plugins/ws-cleanup.hpi'
+    sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/xframe-filter-plugin.hpi -o plugins/xframe-filter-plugin.hpi'
+
+    sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/xframe-filter-plugin.hpi -o plugins/xframe-filter-plugin.hpi'
+
+    sudo su - jenkins -c 'cp -r /tmp/files/org.jenkins.ci.plugins.xframe_filter.XFrameFilterPageDecorator.xml ~/'
+
+
 
     # replace first true for <useSecurity>true</useSecurity> to <useSecurity>false</useSecurity>
     sudo su - jenkins -c 'sed -i "0,/true/s,true,false," config.xml'
+    sudo usermod -aG sudo jenkins
     sudo service jenkins restart
 
   SHELL
@@ -115,6 +125,13 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: <<-SHELL
     sudo su - user -l -c 'wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash'
     sudo su - user -l -c '. ~/.nvm/nvm.sh && nvm install v4.4.5 && nvm alias default v4.4.5 && npm install pm2 -g'
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && pm2 set pm2-webshell:port 9082 && pm2 install pm2-webshell'
+
+    sudo su - user -l -c 'git clone https://github.com/agileworks-tw/pm2-webshell.git'
+    sudo su - user -l -c 'cp -r pm2-webshell/node_modules/tty.js/static/ .pm2/node_modules/pm2-webshell/node_modules/tty.js/'
+    sudo su - user -l -c 'cp -r pm2-webshell/app.js .pm2/node_modules/pm2-webshell/app.js && rm -rf pm2-webshell'
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && pm2 restart pm2-webshell'
+
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
@@ -123,9 +140,15 @@ Vagrant.configure(2) do |config|
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-    sudo su - user -l -c '. ~/.nvm/nvm.sh && cd workspace && git clone git://github.com/c9/core.git c9sdk && cd c9sdk && npm i'
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && cd workspace && git clone git://github.com/c9/core.git c9sdk && cd c9sdk && scripts/install-sdk.sh'
     sudo su - user -l -c '. ~/.nvm/nvm.sh && cd workspace/c9sdk && pm2 start server.js --name "cloud9" -- --debug -l 0.0.0.0 -p 9083 -w /home/user/workspace -a :'
+    sudo su -c "env PATH=$PATH:/home/user/.nvm/versions/node/v4.4.5/bin pm2 startup ubuntu -u user --hp /home/user"
   SHELL
+
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && cd workspace && git clone https://github.com/TrunkWorkshop/sailsSample.git && cd sailsSample && npm i'
+  SHELL
+
 
   config.vm.provision "shell", inline: <<-SHELL
     sudo su - user -c 'java -version'
@@ -139,5 +162,14 @@ Vagrant.configure(2) do |config|
     sudo su - user -c 'cd workspace/java-hello-world && docker run --rm -v `pwd`:/app -w /app anapsix/alpine-java:jdk8 java HelloWorld'
   SHELL
 
+  # config.vm.provision "shell", inline: <<-SHELL
+  #
+  #   sudo su -c 'echo "deb http://download.virtualbox.org/virtualbox/debian $(lsb_release -s -c) contrib" >> /etc/apt/sources.list'
+  #   sudo wget -q http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | sudo apt-key add -
+  #   sudo apt-get update
+  #   sudo apt-get install virtualbox-5.0
+  #   sudo su -c 'curl -L https://github.com/docker/machine/releases/download/v0.7.0/docker-machine-`uname -s`-`uname -m` >/usr/local/bin/docker-machine && chmod +x /usr/local/bin/docker-machine'
+  #
+  # SHELL
 
 end
