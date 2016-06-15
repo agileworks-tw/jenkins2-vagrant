@@ -96,9 +96,8 @@ Vagrant.configure(2) do |config|
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/xframe-filter-plugin.hpi -o plugins/xframe-filter-plugin.hpi'
 
     sudo su - jenkins -c 'cp -r /tmp/files/org.jenkins.ci.plugins.xframe_filter.XFrameFilterPageDecorator.xml ~/'
-
-
-
+    sudo su - jenkins -c 'cp -r /tmp/files/config.xml ~/'
+    sudo service jenkins restart
     sudo usermod -aG sudo jenkins
 
   SHELL
@@ -160,21 +159,17 @@ Vagrant.configure(2) do |config|
     sudo su - user -c 'cd workspace/java-hello-world && docker run --rm -v `pwd`:/app -w /app anapsix/alpine-java:jdk8 java HelloWorld'
   SHELL
 
-  config.vm.provision "shell", inline: <<-SHELL
-
-    # replace first true for <useSecurity>true</useSecurity> to <useSecurity>false</useSecurity>
-    sudo su - jenkins -c 'sed -i "0,/true/s,true,false," config.xml'
-    sudo service jenkins restart
-
-
-    # apt-get -y install localepurge
-    sudo apt-get -y install zerofree
-    sudo apt-get clean
-    sudo dpkg --clear-avail
-    dd if=/dev/zero of=file
-    rm file
-
-  SHELL
+  # config.vm.provision "shell", inline: <<-SHELL
+  #
+  #   # replace first true for <useSecurity>true</useSecurity> to <useSecurity>false</useSecurity>
+  #
+  #   # apt-get -y install localepurge
+  #   # sudo apt-get -y install zerofree
+  #   sudo apt-get clean
+  #   sudo dpkg --clear-avail
+  #   sudo dd if=/dev/zero of=wipefile bs=1024x1024; rm -f wipefile
+  #
+  # SHELL
 
 
   # config.vm.provision "shell", inline: <<-SHELL
