@@ -29,7 +29,7 @@ Vagrant.configure(2) do |config|
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-    wget http://pkg.jenkins-ci.org/debian/binary/jenkins_2.8_all.deb
+    wget http://pkg.jenkins-ci.org/debian/binary/jenkins_2.6_all.deb
     sudo dpkg -i jenkins_2.6_all.deb
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/cobertura.hpi -o plugins/cobertura.hpi'
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/ace-editor.hpi -o plugins/ace-editor.hpi'
