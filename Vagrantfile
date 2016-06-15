@@ -162,6 +162,11 @@ Vagrant.configure(2) do |config|
     sudo su - user -c 'cd workspace/java-hello-world && docker run --rm -v `pwd`:/app -w /app anapsix/alpine-java:jdk8 java HelloWorld'
   SHELL
 
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo apt-get clean
+    sudo apt-get autoremove
+  SHELL
+
   # config.vm.provision "shell", inline: <<-SHELL
   #
   #   sudo su -c 'echo "deb http://download.virtualbox.org/virtualbox/debian $(lsb_release -s -c) contrib" >> /etc/apt/sources.list'
