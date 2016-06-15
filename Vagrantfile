@@ -160,8 +160,6 @@ Vagrant.configure(2) do |config|
     sudo su - user -c 'cd workspace/java-hello-world && docker run --rm -v `pwd`:/app -w /app anapsix/alpine-java:jdk8 java HelloWorld'
   SHELL
 
-  config.vm.provision "shell", inline: <<-SHELL
-
     # replace first true for <useSecurity>true</useSecurity> to <useSecurity>false</useSecurity>
     sudo su - jenkins -c 'sed -i "0,/true/s,true,false," config.xml'
     sudo service jenkins restart
@@ -175,7 +173,6 @@ Vagrant.configure(2) do |config|
     rm file
 
   SHELL
-
 
   # config.vm.provision "shell", inline: <<-SHELL
   #
