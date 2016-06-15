@@ -10,6 +10,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.provider "virtualbox" do |vb|
       vb.memory = "1536"
+      vb.name = "agileworks-vm"
       # vb.cpus = 2
   end
 
@@ -29,8 +30,8 @@ Vagrant.configure(2) do |config|
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-    wget http://pkg.jenkins-ci.org/debian/binary/jenkins_2.6_all.deb
-    sudo dpkg -i jenkins_2.6_all.deb
+    wget http://pkg.jenkins-ci.org/debian/binary/jenkins_2.9_all.deb
+    sudo dpkg -i jenkins_2.9_all.deb
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/cobertura.hpi -o plugins/cobertura.hpi'
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/ace-editor.hpi -o plugins/ace-editor.hpi'
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/antisamy-markup-formatter.hpi -o plugins/antisamy-markup-formatter.hpi'
@@ -98,10 +99,7 @@ Vagrant.configure(2) do |config|
 
 
 
-    # replace first true for <useSecurity>true</useSecurity> to <useSecurity>false</useSecurity>
-    sudo su - jenkins -c 'sed -i "0,/true/s,true,false," config.xml'
     sudo usermod -aG sudo jenkins
-    sudo service jenkins restart
 
   SHELL
 
@@ -162,9 +160,18 @@ Vagrant.configure(2) do |config|
     sudo su - user -c 'cd workspace/java-hello-world && docker run --rm -v `pwd`:/app -w /app anapsix/alpine-java:jdk8 java HelloWorld'
   SHELL
 
-  config.vm.provision "shell", inline: <<-SHELL
+    # replace first true for <useSecurity>true</useSecurity> to <useSecurity>false</useSecurity>
+    sudo su - jenkins -c 'sed -i "0,/true/s,true,false," config.xml'
+    sudo service jenkins restart
+
+
+    # apt-get -y install localepurge
+    sudo apt-get -y install zerofree
     sudo apt-get clean
-    sudo apt-get autoremove
+    sudo dpkg --clear-avail
+    dd if=/dev/zero of=file
+    rm file
+
   SHELL
 
   # config.vm.provision "shell", inline: <<-SHELL
