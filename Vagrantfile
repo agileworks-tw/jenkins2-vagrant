@@ -95,8 +95,10 @@ Vagrant.configure(2) do |config|
 
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/xframe-filter-plugin.hpi -o plugins/xframe-filter-plugin.hpi'
 
-    sudo su - jenkins -c 'cp -r /tmp/files/org.jenkins.ci.plugins.xframe_filter.XFrameFilterPageDecorator.xml ~/'
-    sudo su - jenkins -c 'cp -r /tmp/files/config.xml ~/'
+    sudo su - jenkins -c 'cp -f /tmp/files/org.jenkins.ci.plugins.xframe_filter.XFrameFilterPageDecorator.xml ~/'
+    sudo su - jenkins -c 'cp -f /tmp/files/config.xml ~/'
+    sudo su - jenkins -c 'cp -f /tmp/files/.bash_profile ~/'
+    sudo su - jenkins -c 'cp -f /tmp/files/Makefile ~/'
     sudo service jenkins restart
     sudo usermod -aG sudo jenkins
 
@@ -161,13 +163,10 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "shell", inline: <<-SHELL
 
-    # replace first true for <useSecurity>true</useSecurity> to <useSecurity>false</useSecurity>
-
     # apt-get -y install localepurge
     # sudo apt-get -y install zerofree
     sudo apt-get clean
     sudo dpkg --clear-avail
-    # sudo dd if=/dev/zero of=wipefile bs=1024x1024; rm -f wipefile
 
   SHELL
 
