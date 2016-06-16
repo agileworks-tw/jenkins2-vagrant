@@ -109,7 +109,7 @@ Vagrant.configure(2) do |config|
     sudo apt-get -y install docker-engine
     sudo usermod -a -G docker vagrant
     sudo usermod -a -G docker user
-    # sudo usermod -a -G docker jenkins
+    sudo usermod -a -G docker jenkins
     sudo su -c 'curl -L https://github.com/docker/compose/releases/download/1.7.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose'
     sudo chmod +x /usr/local/bin/docker-compose
     sudo su - user -l -c 'docker pull ubuntu:16.04'
@@ -159,17 +159,17 @@ Vagrant.configure(2) do |config|
     sudo su - user -c 'cd workspace/java-hello-world && docker run --rm -v `pwd`:/app -w /app anapsix/alpine-java:jdk8 java HelloWorld'
   SHELL
 
-  # config.vm.provision "shell", inline: <<-SHELL
-  #
-  #   # replace first true for <useSecurity>true</useSecurity> to <useSecurity>false</useSecurity>
-  #
-  #   # apt-get -y install localepurge
-  #   # sudo apt-get -y install zerofree
-  #   sudo apt-get clean
-  #   sudo dpkg --clear-avail
-  #   sudo dd if=/dev/zero of=wipefile bs=1024x1024; rm -f wipefile
-  #
-  # SHELL
+  config.vm.provision "shell", inline: <<-SHELL
+
+    # replace first true for <useSecurity>true</useSecurity> to <useSecurity>false</useSecurity>
+
+    # apt-get -y install localepurge
+    # sudo apt-get -y install zerofree
+    sudo apt-get clean
+    sudo dpkg --clear-avail
+    # sudo dd if=/dev/zero of=wipefile bs=1024x1024; rm -f wipefile
+
+  SHELL
 
 
   # config.vm.provision "shell", inline: <<-SHELL
