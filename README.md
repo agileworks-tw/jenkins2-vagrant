@@ -37,3 +37,8 @@ make miniVM
 make cleanVM
 make exportVM
 ```
+
+## check list
+
+1. jenkins 新增 free stryle task 後是否可以選擇 git 作為建置來源
+2. jenkins 新增 pipeline task 是否可以編輯 pipeline 區塊
