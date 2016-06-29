@@ -33,6 +33,7 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: <<-SHELL
     wget http://pkg.jenkins-ci.org/debian/binary/jenkins_2.11_all.deb
     sudo dpkg -i jenkins_2.11_all.deb
+    sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/maven-plugin.hpi -o plugins/maven-plugin.hpi'
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/cobertura.hpi -o plugins/cobertura.hpi'
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/ace-editor.hpi -o plugins/ace-editor.hpi'
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/antisamy-markup-formatter.hpi -o plugins/antisamy-markup-formatter.hpi'
