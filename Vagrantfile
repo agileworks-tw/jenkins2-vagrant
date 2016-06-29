@@ -31,8 +31,8 @@ Vagrant.configure(2) do |config|
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-    wget http://pkg.jenkins-ci.org/debian/binary/jenkins_2.6_all.deb
-    sudo dpkg -i jenkins_2.6_all.deb
+    wget http://pkg.jenkins-ci.org/debian/binary/jenkins_2.11_all.deb
+    sudo dpkg -i jenkins_2.11_all.deb
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/cobertura.hpi -o plugins/cobertura.hpi'
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/ace-editor.hpi -o plugins/ace-editor.hpi'
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/antisamy-markup-formatter.hpi -o plugins/antisamy-markup-formatter.hpi'
@@ -94,7 +94,11 @@ Vagrant.configure(2) do |config|
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/ws-cleanup.hpi -o plugins/ws-cleanup.hpi'
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/xframe-filter-plugin.hpi -o plugins/xframe-filter-plugin.hpi'
 
-    sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/xframe-filter-plugin.hpi -o plugins/xframe-filter-plugin.hpi'
+    sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/bouncycastle-api.hpi -o plugins/bouncycastle-api.hpi'
+    sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/ssh-agent.hpi -o plugins/ssh-agent.hpi'
+    sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/ghprb.hpi -o plugins/ghprb.hpi'
+    sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/slack.hpi -o plugins/slack.hpi'
+
 
     sudo su - jenkins -c 'cp -f /tmp/files/org.jenkins.ci.plugins.xframe_filter.XFrameFilterPageDecorator.xml ~/'
     sudo su - jenkins -c 'cp -f /tmp/files/config.xml ~/'
@@ -170,6 +174,9 @@ Vagrant.configure(2) do |config|
     sudo dpkg --clear-avail
 
   SHELL
+
+  config.vm.synced_folder "files", "/tmp/files/", disabled: true
+  config.vm.synced_folder ".", "/vagrant", disabled: true
 
 
   # config.vm.provision "shell", inline: <<-SHELL
