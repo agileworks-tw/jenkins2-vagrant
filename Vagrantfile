@@ -129,7 +129,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "shell", inline: <<-SHELL
     sudo su - user -l -c 'wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash'
-    sudo su - user -l -c '. ~/.nvm/nvm.sh && nvm install v4.4.5 && nvm alias default v4.4.5 && npm install pm2 -g'
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && nvm install v5 && nvm alias default v5 && npm install pm2 -g'
     sudo su - user -l -c '. ~/.nvm/nvm.sh && pm2 set pm2-webshell:port 9082 && pm2 install pm2-webshell'
 
     sudo su - user -l -c 'git clone https://github.com/agileworks-tw/pm2-webshell.git'
@@ -145,17 +145,17 @@ Vagrant.configure(2) do |config|
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-    sudo su - user -l -c '. ~/.nvm/nvm.sh && cd workspace && git clone git://github.com/c9/core.git c9sdk && cd c9sdk && scripts/install-sdk.sh'
-    sudo su - user -l -c '. ~/.nvm/nvm.sh && cd workspace/c9sdk && pm2 start server.js --name "cloud9" -- --debug -l 0.0.0.0 -p 9083 -w /home/user/workspace -a :'
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && git clone git://github.com/c9/core.git c9sdk && cd c9sdk && scripts/install-sdk.sh'
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && cd c9sdk && pm2 start server.js --name "cloud9" -- --debug -l 0.0.0.0 -p 9083 -w /home/user/workspace -a :'
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-    sudo su - user -l -c '. ~/.nvm/nvm.sh && cd workspace && git clone https://github.com/TrunkWorkshop/sailsSample.git && cd sailsSample && npm i'
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && cd workspace && git clone https://github.com/agileworks-tw/sails-sample.git && cd sails-sample && npm i'
   SHELL
 
 
   config.vm.provision "shell", inline: <<-SHELL
-    sudo su -c "env PATH=$PATH:/home/user/.nvm/versions/node/v4.4.5/bin pm2 startup ubuntu -u user --hp /home/user"
+    sudo su -c "env PATH=$PATH:/home/user/.nvm/versions/node/v5/bin pm2 startup ubuntu -u user --hp /home/user"
     sudo su - user -c 'java -version'
     sudo su - user -c 'mvn -version'
     sudo su - user -c 'docker -v'
