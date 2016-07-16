@@ -157,7 +157,7 @@ Vagrant.configure(2) do |config|
 
 
   config.vm.provision "shell", inline: <<-SHELL
-    sudo su -c "env PATH=$PATH:/home/user/.nvm/versions/node/v4/bin pm2 startup ubuntu -u user --hp /home/user"
+    sudo su -c "env PATH=$PATH:/home/user/.nvm/versions/node/v4/bin pm2 startup ubuntu -u user --hp /home/user /home/user/c9sdk/bin"
     sudo su - user -c 'java -version'
     sudo su - user -c 'mvn -version'
     sudo su - user -c 'docker -v'
