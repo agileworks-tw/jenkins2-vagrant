@@ -101,6 +101,10 @@ Vagrant.configure(2) do |config|
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/slack.hpi -o plugins/slack.hpi'
 
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/findbugs.hpi -o plugins/findbugs.hpi'
+    sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/pmd.hpi -o plugins/pmd.hpi'
+    sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/checkstyle.hpi -o plugins/checkstyle.hpi'
+    sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/dry.hpi -o plugins/dry.hpi'
+
 
 
     sudo su - jenkins -c 'cp -f /tmp/files/org.jenkins.ci.plugins.xframe_filter.XFrameFilterPageDecorator.xml ~/'
