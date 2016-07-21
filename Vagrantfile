@@ -27,7 +27,7 @@ Vagrant.configure(2) do |config|
 
     sudo apt-add-repository ppa:andrei-pozolotin/maven3
     sudo apt-get -y update
-    sudo apt-get -y install phantomjs gradle default-jre default-jdk maven3 daemon unzip git build-essential
+    sudo apt-get -y install phantomjs gradle default-jre default-jdk maven3 daemon unzip git build-essential sqlite3
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
