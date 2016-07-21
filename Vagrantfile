@@ -134,6 +134,9 @@ Vagrant.configure(2) do |config|
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
+    sudo su - jenkins -l -c 'wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash'
+    sudo su - jenkins -l -c '. ~/.nvm/nvm.sh && nvm install v5 && nvm alias default v5 && npm install pm2 -g'
+
     sudo su - user -l -c 'wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash'
     sudo su - user -l -c '. ~/.nvm/nvm.sh && nvm install v4 && nvm install v5 && nvm alias default v4 && npm install pm2 -g && npm install hexo-cli -g'
     sudo su - user -l -c '. ~/.nvm/nvm.sh && pm2 set pm2-webshell:port 9082 && pm2 install pm2-webshell'
