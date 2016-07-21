@@ -135,7 +135,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "shell", inline: <<-SHELL
     sudo su - user -l -c 'wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash'
-    sudo su - user -l -c '. ~/.nvm/nvm.sh && nvm install v5 && nvm alias default v5 && npm install pm2 -g'
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && nvm install v4 && nvm install v5 && nvm alias default v4 && npm install pm2 -g && npm install hexo-cli -g'
     sudo su - user -l -c '. ~/.nvm/nvm.sh && pm2 set pm2-webshell:port 9082 && pm2 install pm2-webshell'
 
     sudo su - user -l -c 'git clone https://github.com/agileworks-tw/pm2-webshell.git'
@@ -161,7 +161,7 @@ Vagrant.configure(2) do |config|
 
 
   config.vm.provision "shell", inline: <<-SHELL
-    sudo su -c "env PATH=$PATH:/home/user/.nvm/versions/node/v5/bin pm2 startup ubuntu -u user --hp /home/user /home/user/c9sdk/bin"
+    sudo su -c "env PATH=$PATH:/home/user/.nvm/versions/node/v4/bin pm2 startup ubuntu -u user --hp /home/user /home/user/c9sdk/bin"
     sudo su - user -c 'java -version'
     sudo su - user -c 'mvn -version'
     sudo su - user -c 'docker -v'
@@ -171,6 +171,10 @@ Vagrant.configure(2) do |config|
     sudo su - user -c 'cd workspace/java-hello-world && javac HelloWorld.java && java HelloWorld'
     sudo su - user -c 'cd workspace/java-hello-world && docker run --rm -v `pwd`:/app -w /app anapsix/alpine-java:jdk8 javac HelloWorld.java'
     sudo su - user -c 'cd workspace/java-hello-world && docker run --rm -v `pwd`:/app -w /app anapsix/alpine-java:jdk8 java HelloWorld'
+  SHELL
+
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo su - user -c '~/.nvm/nvm.sh && git clone https://github.com/agileworks-tw/node-tdd-sample.git && cd node-tdd-sample && npm i'
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
