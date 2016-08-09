@@ -11,8 +11,8 @@ Vagrant.configure(2) do |config|
 
   config.vm.provider "virtualbox" do |vb|
       vb.memory = "2560"
-      vb.name = "AgileWorks-release"
-      # vb.cpus = 2
+      vb.name = "agileworks-vm"
+      vb.cpus = 2
   end
 
   config.vm.synced_folder "files", "/tmp/files/"
@@ -24,15 +24,23 @@ Vagrant.configure(2) do |config|
     sudo usermod -aG sudo user
     sudo su -c  'echo "%sudo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers'
     sudo su -c  'echo "user:password" | chpasswd'
-
+    sudo add-apt-repository -y ppa:openjdk-r/ppa
     sudo apt-add-repository ppa:andrei-pozolotin/maven3
-    sudo apt-get -y update
-    sudo apt-get -y install phantomjs gradle default-jre default-jdk maven3 daemon unzip git build-essential sqlite3
+    add-apt-repository ppa:webupd8team/java
+    apt-get -y -q update
+
+    sudo apt-get -y purge openjdk-7-jdk default-jre default-jdk
+    apt-get -y -q install software-properties-common htop
+    echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
+    apt-get -y -q install oracle-java8-installer
+    update-java-alternatives -s java-8-oracle
+    sudo apt-get -y install phantomjs gradle maven3 daemon unzip git build-essential sqlite3
+    sudo su - user -c 'mkdir workspace'
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-    wget http://pkg.jenkins-ci.org/debian/binary/jenkins_2.11_all.deb
-    sudo dpkg -i jenkins_2.11_all.deb
+    wget http://pkg.jenkins-ci.org/debian-stable/binary/jenkins_2.7.1_all.deb
+    sudo dpkg -i jenkins_2.7.1_all.deb
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/maven-plugin.hpi -o plugins/maven-plugin.hpi'
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/cobertura.hpi -o plugins/cobertura.hpi'
     sudo su - jenkins -c 'curl -sSL -f https://updates.jenkins.io/latest/ace-editor.hpi -o plugins/ace-editor.hpi'
@@ -119,7 +127,7 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: <<-SHELL
     sudo apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
     sudo add-apt-repository -y "deb https://apt.dockerproject.org/repo ubuntu-$(lsb_release -s -c) main"
-    sudo apt-get -y update
+    sudo apt-get -y -q update
     sudo apt-get -y install docker-engine
     sudo usermod -a -G docker vagrant
     sudo usermod -a -G docker user
@@ -134,11 +142,22 @@ Vagrant.configure(2) do |config|
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
+    # 安裝 node 請用完整版本號碼，使用 v5.12.0 而不是 v5
     sudo su - jenkins -l -c 'wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash'
-    sudo su - jenkins -l -c '. ~/.nvm/nvm.sh && nvm install v5 && nvm alias default v5 && npm install pm2 -g'
+    sudo su - jenkins -l -c '. ~/.nvm/nvm.sh && nvm install v5.12.0 && nvm alias default v5.12.0 && npm install pm2 -g'
 
     sudo su - user -l -c 'wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash'
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && nvm install v5.12.0 && nvm alias default v5.12.0 && npm install pm2 -g'
+  SHELL
+
+
+  config.vm.provision "shell", inline: <<-SHELL
+
+    sudo su - user -l -c 'wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash'
+<<<<<<< HEAD
     sudo su - user -l -c '. ~/.nvm/nvm.sh && nvm install v4 && nvm install v5 && nvm use v4 && nvm alias default v4 && npm install pm2 -g && npm install hexo-cli -g'
+=======
+>>>>>>> upstream/master
     sudo su - user -l -c '. ~/.nvm/nvm.sh && pm2 set pm2-webshell:port 9082 && pm2 install pm2-webshell'
 
     sudo su - user -l -c 'git clone https://github.com/agileworks-tw/pm2-webshell.git'
@@ -146,25 +165,26 @@ Vagrant.configure(2) do |config|
     sudo su - user -l -c 'cp -r pm2-webshell/app.js .pm2/node_modules/pm2-webshell/app.js && rm -rf pm2-webshell'
     sudo su - user -l -c '. ~/.nvm/nvm.sh && pm2 restart pm2-webshell'
 
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && git clone git://github.com/c9/core.git c9sdk && cd c9sdk && scripts/install-sdk.sh'
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && cd c9sdk && pm2 start server.js --name "cloud9" -- --debug -l 0.0.0.0 -p 9083 -w /home/user/workspace -a :'
+
+    sudo su -c "env PATH=$PATH:/home/user/.nvm/versions/node/v5.12.0/bin pm2 startup ubuntu -u user --hp /home/user"
+
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-    sudo su - user -c 'mkdir workspace && cd workspace && git clone https://github.com/agileworks-tw/spring-boot-sample.git'
+    sudo su - user -c 'cd workspace && git clone https://github.com/agileworks-tw/spring-boot-sample.git'
     sudo su - user -c 'cd workspace/spring-boot-sample && mvn package'
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-    sudo su - user -l -c '. ~/.nvm/nvm.sh && git clone git://github.com/c9/core.git c9sdk && cd c9sdk && scripts/install-sdk.sh'
-    sudo su - user -l -c '. ~/.nvm/nvm.sh && cd c9sdk && pm2 start server.js --name "cloud9" -- --debug -l 0.0.0.0 -p 9083 -w /home/user/workspace -a :'
-  SHELL
-
-  config.vm.provision "shell", inline: <<-SHELL
     sudo su - user -l -c '. ~/.nvm/nvm.sh && cd workspace && git clone https://github.com/agileworks-tw/sails-sample.git && cd sails-sample && npm i'
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && cd workspace && git clone https://github.com/agileworks-tw/node-tdd-sample.git && cd node-tdd-sample && npm i'
   SHELL
 
 
+
   config.vm.provision "shell", inline: <<-SHELL
-    sudo su -c "env PATH=$PATH:/home/user/.nvm/versions/node/v4/bin pm2 startup ubuntu -u user --hp /home/user /home/user/c9sdk/bin"
     sudo su - user -c 'java -version'
     sudo su - user -c 'mvn -version'
     sudo su - user -c 'docker -v'
@@ -176,9 +196,6 @@ Vagrant.configure(2) do |config|
     sudo su - user -c 'cd workspace/java-hello-world && docker run --rm -v `pwd`:/app -w /app anapsix/alpine-java:jdk8 java HelloWorld'
   SHELL
 
-  config.vm.provision "shell", inline: <<-SHELL
-    sudo su - user -c '~/.nvm/nvm.sh && git clone https://github.com/agileworks-tw/node-tdd-sample.git && cd node-tdd-sample && npm i'
-  SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
     # apt-get -y install localepurge
