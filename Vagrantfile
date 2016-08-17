@@ -154,10 +154,7 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: <<-SHELL
 
     sudo su - user -l -c 'wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash'
-<<<<<<< HEAD
-    sudo su - user -l -c '. ~/.nvm/nvm.sh && nvm install v4 && nvm install v5 && nvm use v4 && nvm alias default v4 && npm install pm2 -g && npm install hexo-cli -g'
-=======
->>>>>>> upstream/master
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && nvm install v4.4.7 && nvm install v5.12.0 && nvm use v5.12.0 && nvm alias default v5.12.0 && npm install pm2 -g && npm install hexo-cli -g && npm install -g react-native-cli'
     sudo su - user -l -c '. ~/.nvm/nvm.sh && pm2 set pm2-webshell:port 9082 && pm2 install pm2-webshell'
 
     sudo su - user -l -c 'git clone https://github.com/agileworks-tw/pm2-webshell.git'
@@ -196,6 +193,18 @@ Vagrant.configure(2) do |config|
     sudo su - user -c 'cd workspace/java-hello-world && docker run --rm -v `pwd`:/app -w /app anapsix/alpine-java:jdk8 java HelloWorld'
   SHELL
 
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo su - user -c 'sudo wget -O android-sdk-linux.tgz "http://nas.trunksys.com:8080/share.cgi?ssid=04uwScj&fid=04uwScj&path=%2F&filename=android-sdk-linux-for-agileworks.20160816.tgz&openfolder=forcedownload&ep="'
+    sudo su - user -c 'sudo tar zxvf android-sdk-linux.tgz'
+    sudo apt-get -y install ib32z1
+    sudo apt-get -y install lib32stdc++6
+    sudo su - user -c 'echo "export JAVA_HOME=/usr/lib/jvm/java-8-oracle" >> ~/.bashrc && source ~/.bashrc'
+    sudo su - user -c 'echo "export PATH=${PATH}:$JAVA_HOME/bin" >> ~/.bashrc && source ~/.bashrc'
+    sudo su - user -c 'echo "export CLASSPATH=.:$JAVA_HOME/lib" >> ~/.bashrc && source ~/.bashrc'
+    sudo su - user -c 'echo "export ANDROID_HOME=$HOME/android-sdk-linux" >> ~/.bashrc && source ~/.bashrc'
+    sudo su - user -c 'echo "export PATH=${PATH}:$HOME/android-sdk-linux/platform-tools:$HOME/android-sdk-linux/tools" >> ~/.bashrc && source ~/.bashrc'
+  SHELL1
+
 
   config.vm.provision "shell", inline: <<-SHELL
     # apt-get -y install localepurge
@@ -206,7 +215,7 @@ Vagrant.configure(2) do |config|
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-    sudo su - user -c 'sudo touch /etc/agileworks-release && sudo echo "20160725" >> /etc/agileworks-release'
+    sudo su - user -c 'sudo touch /etc/agileworks-release && sudo echo "20160817" >> /etc/agileworks-release'
   SHELL
 
   config.vm.synced_folder "files", "/tmp/files/", disabled: true
