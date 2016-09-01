@@ -154,6 +154,7 @@ Vagrant.configure(2) do |config|
   config.vm.provision "shell", inline: <<-SHELL
 
     sudo su - user -l -c 'wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.31.1/install.sh | bash'
+    sudo su - user -l -c '. ~/.nvm/nvm.sh && nvm install v4.4.7 && nvm install v5.12.0 && nvm use v5.12.0 && nvm alias default v5.12.0 && npm install pm2 -g && npm install hexo-cli -g && npm install -g react-native-cli'
     sudo su - user -l -c '. ~/.nvm/nvm.sh && pm2 set pm2-webshell:port 9082 && pm2 install pm2-webshell'
 
     sudo su - user -l -c 'git clone https://github.com/agileworks-tw/pm2-webshell.git'
@@ -192,13 +193,16 @@ Vagrant.configure(2) do |config|
     sudo su - user -c 'cd workspace/java-hello-world && docker run --rm -v `pwd`:/app -w /app anapsix/alpine-java:jdk8 java HelloWorld'
   SHELL
 
-
   config.vm.provision "shell", inline: <<-SHELL
     # apt-get -y install localepurge
     # sudo apt-get -y install zerofree
     sudo apt-get clean
     sudo dpkg --clear-avail
 
+  SHELL
+
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo su - user -c 'sudo touch /etc/agileworks-release && sudo echo "20160901" >> /etc/agileworks-release'
   SHELL
 
   config.vm.synced_folder "files", "/tmp/files/", disabled: true
