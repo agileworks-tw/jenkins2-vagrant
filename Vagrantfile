@@ -194,19 +194,6 @@ Vagrant.configure(2) do |config|
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-    sudo su - user -c 'sudo wget -O android-sdk-linux.tgz "http://nas.trunksys.com:8080/share.cgi?ssid=04uwScj&fid=04uwScj&path=%2F&filename=android-sdk-linux-for-agileworks.20160816.tgz&openfolder=forcedownload&ep="'
-    sudo su - user -c 'sudo tar zxvf android-sdk-linux.tgz'
-    sudo apt-get -y install ib32z1
-    sudo apt-get -y install lib32stdc++6
-    sudo su - user -c 'echo "export JAVA_HOME=/usr/lib/jvm/java-8-oracle" >> ~/.bashrc && source ~/.bashrc'
-    sudo su - user -c 'echo "export PATH=${PATH}:$JAVA_HOME/bin" >> ~/.bashrc && source ~/.bashrc'
-    sudo su - user -c 'echo "export CLASSPATH=.:$JAVA_HOME/lib" >> ~/.bashrc && source ~/.bashrc'
-    sudo su - user -c 'echo "export ANDROID_HOME=$HOME/android-sdk-linux" >> ~/.bashrc && source ~/.bashrc'
-    sudo su - user -c 'echo "export PATH=${PATH}:$HOME/android-sdk-linux/platform-tools:$HOME/android-sdk-linux/tools" >> ~/.bashrc && source ~/.bashrc'
-  SHELL1
-
-
-  config.vm.provision "shell", inline: <<-SHELL
     # apt-get -y install localepurge
     # sudo apt-get -y install zerofree
     sudo apt-get clean
@@ -215,7 +202,7 @@ Vagrant.configure(2) do |config|
   SHELL
 
   config.vm.provision "shell", inline: <<-SHELL
-    sudo su - user -c 'sudo touch /etc/agileworks-release && sudo echo "20160817" >> /etc/agileworks-release'
+    sudo su - user -c 'sudo touch /etc/agileworks-release && sudo echo "20160901" >> /etc/agileworks-release'
   SHELL
 
   config.vm.synced_folder "files", "/tmp/files/", disabled: true
